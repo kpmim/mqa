@@ -44,7 +44,6 @@
     min-height:100vh;
   }
 
-  /* ===== SIDEBAR ===== */
   .sidebar{
     flex:0 0 240px;
     background:var(--sidebar);
@@ -134,7 +133,6 @@
   .user-meta .name{font-size:12.5px; font-weight:600; color:var(--text);}
   .user-meta .role{font-size:11px; color:var(--text-faint);}
 
-  /* ===== MAIN ===== */
   .main{
     flex:1;
     padding:28px 32px 40px;
@@ -217,7 +215,6 @@
   }
   .info-bar svg{flex:0 0 auto; color:var(--blue-glow);}
 
-  /* stat cards */
   .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -270,7 +267,6 @@
   }
   .stat svg.spark{width:100%; height:32px; display:block;}
 
-  /* toolbar */
   .toolbar{
     display:flex;
     gap:10px;
@@ -333,7 +329,6 @@
   }
   .btn.secondary:hover{color:var(--text); border-color:var(--text-faint);}
 
-  /* groups */
   .group{margin-bottom:22px;}
   .group-title{
     display:flex;
@@ -551,7 +546,6 @@
     gap:8px;
   }
 
-  /* Modal */
   .overlay{
     position:fixed; inset:0;
     background:rgba(5,8,16,0.65);
@@ -635,7 +629,6 @@
 <body>
 <div class="app">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="brand">
       <svg class="seal" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -693,7 +686,6 @@
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
 
     <div class="header">
@@ -720,20 +712,21 @@
     </div>
 
     <div id="setupBanner" class="setup-banner" style="display:none;">
-      <h3>⚙️ Sambungkan Firebase dahulu</h3>
+      <h3>&#9881;&#65039; Sambungkan Firebase dahulu</h3>
       <ol>
-        <li>Pergi ke <code>console.firebase.google.com</code> → cipta projek baru (percuma)</li>
-        <li>Buka <b>Build → Firestore Database</b> → Create database → mula dalam mod test</li>
-        <li>Buka <b>Project settings → General → Add app → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code></li>
+        <li>Pergi ke <code>console.firebase.google.com</code> &rarr; cipta projek baru (percuma)</li>
+        <li>Buka <b>Build &rarr; Firestore Database</b> &rarr; Create database &rarr; mula dalam mod test</li>
+        <li>Buka <b>Project settings &rarr; General &rarr; Add app &rarr; Web (&lt;/&gt;)</b> &rarr; salin <code>firebaseConfig</code></li>
         <li>Tampal config tu dalam fail HTML ini, cari <code>firebaseConfig = {...}</code> di bahagian bawah</li>
         <li>Dalam Firestore Rules, tampal peraturan yang disediakan (rujuk mesej chat) supaya pasukan boleh baca/tulis</li>
       </ol>
-      <p style="font-size:12.5px;color:var(--text-soft);margin:0;">Selepas config diisi, muat semula halaman ini — banner ini akan hilang secara automatik.</p>
+      <p style="font-size:12.5px;color:var(--text-soft);margin:0;">Selepas config diisi, muat semula halaman ini &mdash; banner ini akan hilang secara automatik.</p>
     </div>
 
     <div class="info-bar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       Data dikongsi antara semua ahli pasukan yang buka dashboard ini.
+      <span id="connStatus" class="conn-status offline">&#9679; Belum disambung</span>
     </div>
 
     <div class="stats">
@@ -793,7 +786,7 @@
 
     <div class="footer">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      © 2026 Unit QA/Akademik · Sistem Daftar Pematuhan MQA
+      &copy; 2026 Unit QA/Akademik &middot; Sistem Daftar Pematuhan MQA
     </div>
 
   </div>
@@ -855,9 +848,6 @@ import {
   addDoc, updateDoc, deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ============================================================
-// 1) TAMPAL firebaseConfig ANDA DI SINI (dari Firebase Console)
-// ============================================================
   const firebaseConfig = {
     apiKey: "AIzaSyC0Rpr8iFuxdteu7wJqP_2QGPNlrzLMHzo",
     authDomain: "mqa-registry.firebaseapp.com",
@@ -867,7 +857,6 @@ import {
     appId: "1:626780111729:web:bc57ffb2e196d9ce26ecd0"
   };
 const COLLECTION_NAME = 'mqa_links';
-// ============================================================
 
 let entries = [];
 let editingId = null;
@@ -914,7 +903,6 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-// ---- Firebase init ----
 try{
   if(firebaseConfig.apiKey && firebaseConfig.apiKey !== "PASTE_API_KEY_ANDA"){
     const app = initializeApp(firebaseConfig);
@@ -929,19 +917,20 @@ try{
 
 if(!firebaseReady){
   setupBanner.style.display = 'block';
-  connStatus.textContent = '● Belum disambung';
+  connStatus.textContent = '\u25CF Belum disambung';
   connStatus.className = 'conn-status offline';
   render();
 } else {
   onSnapshot(entriesCol, (snapshot) => {
     entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    connStatus.textContent = '\u25CF Bersambung';
     connStatus.className = 'conn-status online';
     render();
   }, (err) => {
     console.error('Firestore listen error:', err);
-    connStatus.textContent = '● Ralat sambungan';
+    connStatus.textContent = '\u25CF Ralat sambungan';
     connStatus.className = 'conn-status offline';
-    showToast('Gagal sambung ke Firestore — semak firebaseConfig & rules');
+    showToast('Gagal sambung ke Firestore \u2014 semak firebaseConfig & rules');
   });
 }
 
@@ -982,7 +971,7 @@ function render(){
   let counter = 1;
   groupOrder.forEach(([key, label]) => {
     if(groups[key].length === 0) return;
-    html += `<div class="group"><div class="group-title">${label} · ${groups[key].length}</div>`;
+    html += `<div class="group"><div class="group-title">${label} \u00B7 ${groups[key].length}</div>`;
     groups[key].forEach(e => {
       const no = String(counter++).padStart(3,'0');
       const iconInfo = pickIcon(e);
@@ -997,7 +986,7 @@ function render(){
             <span class="badge ${e.status}">${statusLabel(e.status)}</span>
           </div>
           <div class="entry-row2">
-            ${e.url ? `<a class="entry-url" href="${escapeHtml(e.url)}" target="_blank" rel="noopener">Buka Link ↗</a>` : ''}
+            ${e.url ? `<a class="entry-url" href="${escapeHtml(e.url)}" target="_blank" rel="noopener">Buka Link \u2197</a>` : ''}
           </div>
           ${e.notes ? `<div class="entry-notes">${escapeHtml(e.notes)}</div>` : ''}
           ${(e.tags && e.tags.length) ? `<div class="tags">${e.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
