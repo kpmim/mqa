@@ -726,7 +726,6 @@
     <div class="info-bar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       Data dikongsi antara semua ahli pasukan yang buka dashboard ini.
-      <span id="connStatus" class="conn-status offline">&#9679; Belum disambung</span>
     </div>
 
     <div class="stats">
@@ -917,7 +916,6 @@ try{
 
 if(!firebaseReady){
   setupBanner.style.display = 'block';
-  connStatus.textContent = '\u25CF Belum disambung';
   connStatus.className = 'conn-status offline';
   render();
 } else {
@@ -927,7 +925,6 @@ if(!firebaseReady){
     render();
   }, (err) => {
     console.error('Firestore listen error:', err);
-    connStatus.textContent = '\u25CF Ralat sambungan';
     connStatus.className = 'conn-status offline';
     showToast('Gagal sambung ke Firestore \u2014 semak firebaseConfig & rules');
   });
