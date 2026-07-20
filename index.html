@@ -923,7 +923,6 @@ if(!firebaseReady){
 } else {
   onSnapshot(entriesCol, (snapshot) => {
     entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    //connStatus.textContent = '\u25CF Bersambung';
     connStatus.className = 'conn-status online';
     render();
   }, (err) => {
